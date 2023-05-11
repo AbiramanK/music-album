@@ -5,6 +5,7 @@ type RootStackParamsList = {
   Auth: undefined;
   ForgotPassword: undefined;
   UpdatePassword: {type: 'change' | 'reset'};
+  Home: undefined;
 };
 
 type AuthScreenNavigationProps = NativeStackNavigationProp<
@@ -26,10 +27,16 @@ type UpdatePasswordScreenRouteProps = RouteProp<
   'UpdatePassword'
 >;
 
+type HomeScreenNavigationProps = NativeStackNavigationProp<
+  RootStackParamsList,
+  'Home'
+>;
+
 export type {
   RootStackParamsList,
   AuthScreenNavigationProps,
   ForgotPasswordScreenNavigationProps,
   UpdatePasswordScreenNavigationProps,
   UpdatePasswordScreenRouteProps,
+  HomeScreenNavigationProps,
 };

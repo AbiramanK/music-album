@@ -77,7 +77,7 @@ function AuthScreen(props: IAuthScreenProps) {
       setPasswordValid(isPasswordValidFlag);
       if (isEmailValidFlag && isPasswordValidFlag) {
         resetInputs();
-        Alert.alert('🔥', 'Successfully Logged In');
+        navigate('Home');
       }
     }, 1500);
   };

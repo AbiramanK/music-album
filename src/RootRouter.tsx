@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   AuthContainer,
   ForgotPasswordContainer,
+  HomeContainer,
   UpdatePasswordContainer,
 } from './containers';
 import {RootStackParamsList} from './types/navigation';
@@ -29,6 +30,7 @@ function RootRouter(props: IRootRouterProps) {
             type: 'change',
           }}
         />
+        <Stack.Screen name="Home" component={HomeContainer} />
       </Stack.Navigator>
     </NavigationContainer>
   );
