@@ -9,6 +9,7 @@ import {
   UpdatePasswordContainer,
 } from './containers';
 import {RootStackParamsList} from './types/navigation';
+import MainBottomTabs from './MaterialBottonTabsRouter';
 
 const Stack = createNativeStackNavigator<RootStackParamsList>();
 
@@ -17,7 +18,7 @@ export interface IRootRouterProps {}
 function RootRouter(props: IRootRouterProps) {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Auth">
+      <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Auth" component={AuthContainer} />
         <Stack.Screen
           name="ForgotPassword"
@@ -30,7 +31,7 @@ function RootRouter(props: IRootRouterProps) {
             type: 'change',
           }}
         />
-        <Stack.Screen name="Home" component={HomeContainer} />
+        <Stack.Screen name="Main" component={MainBottomTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );
