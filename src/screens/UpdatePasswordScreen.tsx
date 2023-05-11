@@ -13,7 +13,8 @@ import {
 export interface IUpdatePasswordScreenProps {}
 
 function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
-  const {navigate} = useNavigation<UpdatePasswordScreenNavigationProps>();
+  const {navigate, goBack} =
+    useNavigation<UpdatePasswordScreenNavigationProps>();
   const {params} = useRoute<UpdatePasswordScreenRouteProps>();
 
   const oldPasswordInputRef = useRef<InputProps>(null);
@@ -58,7 +59,11 @@ function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
       setTimeout(() => {
         setIsLoading(false);
         resetInputs();
-        navigate('Auth');
+        if (params?.type === 'change') {
+          goBack();
+        } else {
+          navigate('Auth');
+        }
       }, 1000);
     }
   }

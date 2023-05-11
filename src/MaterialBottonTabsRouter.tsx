@@ -1,14 +1,15 @@
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {HomeContainer} from './containers';
+
+import {HomeContainer, ProfileContainer} from './containers';
 import {RootMaterialBottomTabsParams} from './types/navigation';
 
 const Tab = createMaterialBottomTabNavigator<RootMaterialBottomTabsParams>();
 
 function MainBottomTabs() {
   return (
-    <Tab.Navigator shifting={true}>
+    <Tab.Navigator shifting={true} initialRouteName={'Home'}>
       <Tab.Screen
         name="Home"
         component={HomeContainer}
@@ -21,7 +22,7 @@ function MainBottomTabs() {
       />
       <Tab.Screen
         name="Profile"
-        component={HomeContainer}
+        component={ProfileContainer}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (

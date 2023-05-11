@@ -1,3 +1,4 @@
+import {MaterialBottomTabNavigationProp} from '@react-navigation/material-bottom-tabs';
 import {RouteProp} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -35,6 +36,11 @@ type RootMaterialBottomTabsParams = {
   Profile: undefined;
 };
 
+type ProfileScreenNavigationProps = MaterialBottomTabNavigationProp<
+  RootMaterialBottomTabsParams,
+  'Profile'
+>;
+
 export type {
   RootStackParamsList,
   AuthScreenNavigationProps,
@@ -43,4 +49,5 @@ export type {
   UpdatePasswordScreenRouteProps,
   MainScreenNavigationProps,
   RootMaterialBottomTabsParams,
+  ProfileScreenNavigationProps,
 };

@@ -31,7 +31,13 @@ function RootRouter(props: IRootRouterProps) {
             type: 'change',
           }}
         />
-        <Stack.Screen name="Main" component={MainBottomTabs} />
+        <Stack.Screen
+          name="Main"
+          component={MainBottomTabs}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
