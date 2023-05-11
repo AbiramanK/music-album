@@ -1,17 +1,34 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {AuthContainer} from './containers';
 
-const Stack = createNativeStackNavigator();
+import {
+  AuthContainer,
+  ForgotPasswordContainer,
+  UpdatePasswordContainer,
+} from './containers';
+import {RootStackParamsList} from './types/navigation';
+
+const Stack = createNativeStackNavigator<RootStackParamsList>();
 
 export interface IRootRouterProps {}
 
 function RootRouter(props: IRootRouterProps) {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Auth">
         <Stack.Screen name="Auth" component={AuthContainer} />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordContainer}
+        />
+        <Stack.Screen
+          name="UpdatePassword"
+          component={UpdatePasswordContainer}
+          initialParams={{
+            type: 'change',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
