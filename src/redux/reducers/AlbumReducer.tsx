@@ -1,5 +1,5 @@
-import {createAsyncThunk, createReducer, createSlice} from '@reduxjs/toolkit';
-import {getAlbumsRequest} from '../actions/AlbumAction';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {logoutRequestAction} from '../actions/UserAction';
 import {FETCH_ALBUMS} from '../Constant';
 
 export interface AlbumInitialStateInterface {
@@ -24,21 +24,24 @@ const AlbumSlice = createSlice({
   name: 'album',
   initialState,
   extraReducers(builder) {
-    builder.addCase(fetchAlbums.pending, state => {
-      state.isLoading = true;
-    });
+    builder
+      .addCase(fetchAlbums.pending, state => {
+        state.isLoading = true;
+      })
 
-    builder.addCase(fetchAlbums.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.albums = action.payload;
-      state.error = '';
-    });
-
-    builder.addCase(fetchAlbums.rejected, (state, action) => {
-      state.isLoading = false;
-      state.albums = undefined;
-      state.error = action.error.message!;
-    });
+      .addCase(fetchAlbums.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.albums = action.payload;
+        state.error = '';
+      })
+      .addCase(fetchAlbums.rejected, (state, action) => {
+        state.isLoading = false;
+        state.albums = undefined;
+        state.error = action.error.message!;
+      })
+      .addCase(logoutRequestAction, (state, action) => {
+        state = Object.assign(state, initialState);
+      });
   },
   reducers: {},
 });

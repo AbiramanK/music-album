@@ -27,6 +27,7 @@ function ProfileContainer(props: IProfileContainerProps) {
   const {user, isLoading, updateNameReponse} = useAppSelector(
     state => state.users,
   );
+
   const dispatchAction = useAppDispatch();
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -67,7 +68,7 @@ function ProfileContainer(props: IProfileContainerProps) {
   }
 
   function logout() {
-    dispatchAction(logoutRequestAction);
+    dispatchAction(logoutRequestAction());
 
     dispatch(
       CommonActions.reset({

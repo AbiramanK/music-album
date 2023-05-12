@@ -18,7 +18,11 @@ function RootRouter(props: IRootRouterProps) {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Auth">
-        <Stack.Screen name="Auth" component={AuthContainer} />
+        <Stack.Screen
+          name="Auth"
+          component={AuthContainer}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="ForgotPassword"
           component={ForgotPasswordContainer}
