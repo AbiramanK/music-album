@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {View} from 'react-native';
+import {Alert, View} from 'react-native';
 import {Button, Icon, Input, InputProps} from '@rneui/themed';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -10,7 +10,11 @@ import {
   UpdatePasswordScreenRouteProps,
 } from '../types/navigation';
 
-export interface IUpdatePasswordScreenProps {}
+export interface IUpdatePasswordScreenProps {
+  type: 'change' | 'reset';
+  isLoading: boolean;
+  updatePassword: (data: {oldPassword: string; password: string}) => void;
+}
 
 function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
   const {navigate, goBack} =
@@ -28,10 +32,9 @@ function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] =
     useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function updatePassword() {
-    if (params?.type === 'change') {
+    if (props?.type === 'change') {
       const isOldPasswordValid =
         oldPassword?.trim()?.length > 7 ||
         oldPasswordInputRef?.current?.shake!();
@@ -51,20 +54,12 @@ function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
     setIsConfirmPasswordValid(isConfirmPasswordValid ?? false);
 
     if (
-      (params?.type === 'change' ? isOldPasswordValid : true) &&
+      (props?.type === 'change' ? isOldPasswordValid : true) &&
       isPasswordValid &&
       isConfirmPasswordValid
     ) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        resetInputs();
-        if (params?.type === 'change') {
-          goBack();
-        } else {
-          navigate('Auth');
-        }
-      }, 1000);
+      resetInputs();
+      props?.updatePassword({oldPassword, password});
     }
   }
 
@@ -78,7 +73,7 @@ function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
     <AuthLayout>
       <View style={AuthStyles.formContainer}>
         <>
-          {params?.type === 'change' && (
+          {props?.type === 'change' && (
             <Input
               leftIcon={
                 <Icon
@@ -183,8 +178,8 @@ function UpdatePasswordScreen(props: IUpdatePasswordScreenProps) {
           title={'UPDATE'}
           onPress={updatePassword}
           titleStyle={AuthStyles.loginTextButton}
-          loading={isLoading}
-          disabled={isLoading}
+          loading={props?.isLoading}
+          disabled={props?.isLoading}
         />
       </View>
     </AuthLayout>

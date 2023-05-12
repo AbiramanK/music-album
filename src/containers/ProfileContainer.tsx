@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from 'react';
+import {Alert} from 'react-native';
 
 import {useQuery, useRealm} from '../database';
-import {updateUserNameRequestAction} from '../redux/actions/UserAction';
+import {
+  updateUserNameRequestAction,
+  updateUserRequestAction,
+} from '../redux/actions/UserAction';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {ProfileScreen} from '../screens';
 
@@ -11,17 +15,38 @@ function ProfileContainer(props: IProfileContainerProps) {
   const realm = useRealm();
   const users = useQuery('User');
 
-  const {user, isLoading} = useAppSelector(state => state.users);
+  const {user, isLoading, updateNameReponse} = useAppSelector(
+    state => state.users,
+  );
   const dispatch = useAppDispatch();
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [updatedName, setUpdatedName] = useState<string>('');
 
   useEffect(() => {
-    if (user?.data?.name! === updatedName) {
+    if (
+      updateNameReponse! &&
+      updateNameReponse?.success &&
+      updateNameReponse?.data?.name?.trim() === updatedName?.trim()
+    ) {
+      dispatch(
+        updateUserRequestAction({
+          name: updateNameReponse?.data?.name,
+          password: user?.data?.password,
+        }),
+      );
       setIsEdit(false);
     }
-  }, [user?.data?.name]);
+
+    if (
+      updateNameReponse! &&
+      !updateNameReponse?.success &&
+      updateNameReponse! &&
+      !updateNameReponse?.data
+    ) {
+      Alert.alert(updateNameReponse?.message!);
+    }
+  }, [updateNameReponse]);
 
   function updateUserName(data: {name: string; email: string}) {
     setUpdatedName(data?.name);

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 
 import {useQuery, useRealm} from '../database';
 import {
@@ -9,6 +9,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {AuthScreen} from '../screens';
 import {AuthScreenNavigationProps} from '../types/navigation';
+import {Alert} from 'react-native';
 
 export interface IAuthContainerProps {}
 
@@ -16,19 +17,28 @@ function AuthContainer(props: IAuthContainerProps) {
   const realm = useRealm();
   const users = useQuery('User');
 
-  const {navigate} = useNavigation<AuthScreenNavigationProps>();
+  const {dispatch} = useNavigation<AuthScreenNavigationProps>();
 
-  const dispatch = useAppDispatch();
+  const dispatchAction = useAppDispatch();
   const {user, isLoading} = useAppSelector(state => state?.users);
 
   useEffect(() => {
     if (user?.success) {
-      navigate('Main');
+      dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Main'}],
+        }),
+      );
+    }
+
+    if (user! && !user?.success!) {
+      Alert.alert(user?.message!);
     }
   }, [user]);
 
   function register(data: {name: string; email: string; password: string}) {
-    dispatch(
+    dispatchAction(
       signUpRequestAction({
         realm,
         users,
@@ -38,7 +48,7 @@ function AuthContainer(props: IAuthContainerProps) {
   }
 
   function login(data: {email: string; password: string}) {
-    dispatch(
+    dispatchAction(
       loginUserRequest({
         users,
         data,

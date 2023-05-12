@@ -82,22 +82,28 @@ function updateUserPassword(
   realm: Realm,
   users: Realm.Results<Realm.Object>,
   data: {oldPassword?: string; password?: string; email: string},
-) {
+): ResponseInterface {
   const isExist = findUser(data?.email, users);
-
   if (isExist?.length > 0) {
     if (
-      data?.oldPassword ? isExist[0]?.password! === data?.oldPassword : true
+      data?.oldPassword! ? isExist[0]?.password! === data?.oldPassword : true
     ) {
-      const result = realm.write(() => {
-        return realm?.create(
-          'User',
-          {...isExist[0], password: data?.password, email: data?.email},
-          'modified',
-        );
-      });
-
-      return {success: true, message: 'User password updated', data: result};
+      if (data?.oldPassword !== data?.password) {
+        const result = realm.write(() => {
+          return realm?.create(
+            'User',
+            {...isExist[0], password: data?.password, email: data?.email},
+            'modified',
+          );
+        });
+        return {success: true, message: 'User password updated', data: result};
+      } else {
+        return {
+          success: false,
+          message: `New password can't be same as old password`,
+          data: null,
+        };
+      }
     } else {
       return {success: false, message: 'old password incorrect', data: null};
     }

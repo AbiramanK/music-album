@@ -3,6 +3,7 @@ import {
   createUser,
   loginUser,
   updateUserName,
+  updateUserPassword,
 } from '../../database/dao/UserDao';
 
 import {
@@ -10,7 +11,9 @@ import {
   signUpFailedAction,
   signUpRequestAction,
   signUpSuccessAction,
+  updatePasswordRequestAction,
   updateUserNameRequestAction,
+  updateUserRequestAction,
 } from '../actions/UserAction';
 
 export interface SignUpResponseInterface {
@@ -22,11 +25,15 @@ export interface SignUpResponseInterface {
 export interface UserReducerInititalStateInterface {
   user: SignUpResponseInterface | undefined;
   isLoading: boolean;
+  updateNameReponse: SignUpResponseInterface | undefined;
+  updatePasswordResponse: SignUpResponseInterface | undefined;
 }
 
 const initialState: UserReducerInititalStateInterface = {
   user: undefined,
   isLoading: false,
+  updateNameReponse: undefined,
+  updatePasswordResponse: undefined,
 };
 
 const UserReducer = createReducer(initialState, builder => {
@@ -61,9 +68,30 @@ const UserReducer = createReducer(initialState, builder => {
       const {realm, users, data} = action?.payload;
       const result = updateUserName(realm, users, data);
 
-      state.user = result;
+      state.updateNameReponse = result;
 
       state.isLoading = false;
+    })
+    .addCase(updatePasswordRequestAction, (state, action) => {
+      state.isLoading = true;
+
+      const {realm, users, data} = action?.payload;
+      const result = updateUserPassword(realm, users, data);
+
+      state.updatePasswordResponse = result;
+
+      state.isLoading = false;
+    })
+    .addCase(updateUserRequestAction, (state, action) => {
+      state.user = {
+        success: state?.user?.success!,
+        message: state?.user?.message!,
+        data: {
+          name: action?.payload?.name!,
+          password: action?.payload?.password!,
+          email: state?.user?.data?.email!,
+        },
+      };
     })
 
     .addDefaultCase((state, action) => {
