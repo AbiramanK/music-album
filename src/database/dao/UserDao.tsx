@@ -1,7 +1,15 @@
+import {SignUpResponseInterface} from '../../redux/reducers/UserReducer';
+
 export interface UserPayloadInterface {
   name?: string;
   email: string;
   password: string;
+}
+
+export interface ResponseInterface {
+  success: boolean;
+  message?: string;
+  data: any | null;
 }
 
 function findUser(email: string, users: Realm.Results<Realm.Object>) {
@@ -13,7 +21,7 @@ function createUser(
   realm: Realm,
   users: Realm.Results<Realm.Object>,
   data: UserPayloadInterface,
-) {
+): ResponseInterface {
   const isExist = findUser(data?.email, users);
 
   if (isExist?.length === 0) {
@@ -30,11 +38,19 @@ function createUser(
 function loginUser(
   users: Realm.Results<Realm.Object>,
   data: UserPayloadInterface,
-) {
+): ResponseInterface {
   const isExist = findUser(data?.email, users);
 
   if (isExist?.length > 0) {
-    return {success: true, message: 'User logged in', data: isExist[0]};
+    if (data?.password === isExist[0]?.password!) {
+      return {success: true, message: 'User logged in', data: isExist[0]};
+    } else {
+      return {
+        success: false,
+        message: 'Email / Password incorrect',
+        data: null,
+      };
+    }
   } else {
     return {success: false, message: 'User not exists', data: null};
   }

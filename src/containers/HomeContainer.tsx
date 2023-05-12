@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useQuery, useRealm} from '../database';
+import {signUpRequestAction} from '../redux/actions/UserAction';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+
 import {HomeScreen} from '../screens';
 
 const albums = {

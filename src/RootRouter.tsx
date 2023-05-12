@@ -5,7 +5,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   AuthContainer,
   ForgotPasswordContainer,
-  HomeContainer,
   UpdatePasswordContainer,
 } from './containers';
 import {RootStackParamsList} from './types/navigation';
@@ -18,7 +17,7 @@ export interface IRootRouterProps {}
 function RootRouter(props: IRootRouterProps) {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
+      <Stack.Navigator initialRouteName="Auth">
         <Stack.Screen name="Auth" component={AuthContainer} />
         <Stack.Screen
           name="ForgotPassword"

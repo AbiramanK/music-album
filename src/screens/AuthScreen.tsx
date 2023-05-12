@@ -26,7 +26,11 @@ const TabSelector: React.FunctionComponent<TabSelectorProps> = (
   );
 };
 
-export interface IAuthScreenProps {}
+export interface IAuthScreenProps {
+  login: (data: {email: string; password: string}) => void;
+  register: (data: {name: string; email: string; password: string}) => void;
+  isLoading: boolean;
+}
 
 function AuthScreen(props: IAuthScreenProps) {
   const {navigate} = useNavigation<AuthScreenNavigationProps>();
@@ -36,7 +40,6 @@ function AuthScreen(props: IAuthScreenProps) {
   const passwordInputRef = useRef<InputProps>(null);
   const confirmationInputRef = useRef<InputProps>(null);
 
-  const [isLoading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [isNameValid, setNameValid] = useState<boolean>(true);
   const [email, setEmail] = useState<string>('');
@@ -53,14 +56,12 @@ function AuthScreen(props: IAuthScreenProps) {
 
   const selectCategory = (selectedCategoryIndex: number) => {
     LayoutAnimation.easeInEaseOut();
-    setLoading(false);
     setSelectedCategory(selectedCategoryIndex);
   };
 
   const login = () => {
-    setLoading(true);
-    // Simulate an API call
-    setTimeout(() => {
+    try {
+      // Simulate an API call
       const isEmailValidFlag = validateEmail(email);
       if (!isEmailValidFlag) {
         emailInputRef?.current?.shake!();
@@ -72,18 +73,20 @@ function AuthScreen(props: IAuthScreenProps) {
       }
 
       LayoutAnimation.easeInEaseOut();
-      setLoading(false);
+
       setEmailValid(isEmailValidFlag);
       setPasswordValid(isPasswordValidFlag);
+
       if (isEmailValidFlag && isPasswordValidFlag) {
+        props?.login({email, password});
         resetInputs();
-        navigate('Home');
       }
-    }, 1500);
+    } catch (error: any) {
+      console.error('Login::Catch:: ', error?.message);
+    }
   };
 
   const signUp = () => {
-    setLoading(true);
     // Simulate an API call
     setTimeout(() => {
       const isNameValidFlag =
@@ -96,7 +99,6 @@ function AuthScreen(props: IAuthScreenProps) {
         password === confirmPassword || confirmationInputRef?.current?.shake!();
 
       LayoutAnimation.easeInEaseOut();
-      setLoading(false);
 
       setNameValid(isNameValidFlag ?? false);
 
@@ -111,17 +113,19 @@ function AuthScreen(props: IAuthScreenProps) {
         isPasswordValidFlag &&
         isConfirmPasswordValidFlag
       ) {
+        props?.register({name, email, password});
         resetInputs();
-        Alert.alert('🙏', 'Welcome');
       }
     }, 1500);
   };
 
   function resetInputs() {
-    nameInputRef?.current?.clear!();
-    emailInputRef?.current?.clear!();
+    // nameInputRef?.current?.clear!();
+    // emailInputRef?.current?.clear!();
     passwordInputRef?.current?.clear!();
+    setPassword('');
     confirmationInputRef?.current?.clear!();
+    setConfirmPassword('');
   }
 
   function forgotPassword() {
@@ -142,7 +146,7 @@ function AuthScreen(props: IAuthScreenProps) {
         </View>
         <View style={{flexDirection: 'row'}}>
           <Button
-            disabled={isLoading}
+            disabled={props?.isLoading}
             type="clear"
             activeOpacity={0.7}
             onPress={() => selectCategory(0)}
@@ -154,7 +158,7 @@ function AuthScreen(props: IAuthScreenProps) {
             title="Login"
           />
           <Button
-            disabled={isLoading}
+            disabled={props?.isLoading}
             type="clear"
             activeOpacity={0.7}
             onPress={() => selectCategory(1)}
@@ -304,8 +308,8 @@ function AuthScreen(props: IAuthScreenProps) {
             title={isLoginPage ? 'LOGIN' : 'SIGN UP'}
             onPress={isLoginPage ? login : signUp}
             titleStyle={AuthStyles.loginTextButton}
-            loading={isLoading}
-            disabled={isLoading}
+            loading={props?.isLoading}
+            disabled={props?.isLoading}
           />
         </View>
         <View style={AuthStyles.helpContainer}>
