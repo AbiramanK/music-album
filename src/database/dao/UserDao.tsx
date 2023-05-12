@@ -60,7 +60,7 @@ function updateUserName(
   realm: Realm,
   users: Realm.Results<Realm.Object>,
   data: {name: string; email: string},
-) {
+): ResponseInterface {
   const isExist = findUser(data?.email, users);
 
   if (isExist?.length > 0) {

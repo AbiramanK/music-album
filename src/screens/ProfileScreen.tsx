@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {View} from 'react-native';
+import {Alert, View, UIManager, LayoutAnimation} from 'react-native';
 import {Input, Icon, InputProps, Button} from '@rneui/themed';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,7 +8,18 @@ import {AuthLayout} from '../layouts';
 import {AuthStyles} from '../styles/AuthStyle';
 import {ProfileScreenNavigationProps} from '../types/navigation';
 
-export interface IProfileScreenProps {}
+// Enable LayoutAnimation on Android
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+
+export interface IProfileScreenProps {
+  name: string;
+  email: string;
+  isLoading: boolean;
+  updateUserName: (data: {name: string; email: string}) => void;
+  isEdit: boolean;
+  updateIsEdit: (edit: boolean) => void;
+}
 
 function ProfileScreen(props: IProfileScreenProps) {
   const {navigate} = useNavigation<ProfileScreenNavigationProps>();
@@ -16,24 +27,44 @@ function ProfileScreen(props: IProfileScreenProps) {
   const nameInputRef = useRef<InputProps>(null);
   const emailInputRef = useRef<InputProps>(null);
 
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>(props?.name);
   const [isNameValid, setIsNameValid] = useState<boolean>(true);
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>(props?.email);
   const [isEmailValid, setIsEmailValid] = useState<boolean>(true);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function editProfile() {
-    setIsEdit(true);
+    LayoutAnimation?.easeInEaseOut();
+    props?.updateIsEdit(true);
   }
 
-  function updateProfile() {}
+  function updateProfile() {
+    const isNameValidFlag =
+      name?.trim()?.length > 0 || nameInputRef?.current?.shake!();
+
+    setIsNameValid(isNameValidFlag ?? false);
+
+    if (isNameValidFlag) {
+      if (name?.trim() !== props?.name?.trim()) {
+        props?.updateUserName({name, email});
+      } else {
+        Alert.alert('No changes detected');
+      }
+    }
+  }
+
+  function cancelUpdateProfile() {
+    LayoutAnimation?.easeInEaseOut();
+    setName(props?.name);
+    props?.updateIsEdit(false);
+  }
 
   function updatePassword() {
     navigate('UpdatePassword', {
       type: 'change',
     });
   }
+
+  function logout() {}
 
   return (
     <AuthLayout>
@@ -47,7 +78,7 @@ function ProfileScreen(props: IProfileScreenProps) {
       </View>
       <View style={AuthStyles.formContainer}>
         <Input
-          disabled={!isEdit}
+          disabled={!props?.isEdit}
           leftIcon={
             <Icon
               name="emotsmile"
@@ -99,7 +130,9 @@ function ProfileScreen(props: IProfileScreenProps) {
             borderBottomColor: 'rgba(0, 0, 0, 0.38)',
           }}
           ref={emailInputRef}
-          onSubmitEditing={() => (isEdit ? updateProfile() : editProfile())}
+          onSubmitEditing={() =>
+            props?.isEdit ? updateProfile() : editProfile()
+          }
           onChangeText={text => setEmail(text)}
           errorMessage={
             isEmailValid ? '' : 'Please enter a valid email address'
@@ -114,27 +147,67 @@ function ProfileScreen(props: IProfileScreenProps) {
             paddingHorizontal: 10,
           }}
           activeOpacity={0.8}
-          title={isEdit ? 'UPDATE PROFILE' : 'EDIT PROFILE'}
-          onPress={isEdit ? updateProfile : editProfile}
+          title={props?.isEdit ? 'UPDATE PROFILE' : 'EDIT PROFILE'}
+          onPress={props?.isEdit ? updateProfile : editProfile}
           titleStyle={AuthStyles.loginTextButton}
-          loading={isLoading}
-          disabled={isLoading}
+          loading={props?.isLoading}
+          disabled={props?.isLoading}
         />
-        <Button
-          buttonStyle={[AuthStyles.loginButton, {width: '100%'}]}
-          containerStyle={{
-            marginTop: 20,
-            flex: 0,
-            width: '100%',
-            paddingHorizontal: 10,
-          }}
-          activeOpacity={0.8}
-          title={'UPDATE PASSWORD'}
-          onPress={updatePassword}
-          titleStyle={AuthStyles.loginTextButton}
-          loading={isLoading}
-          disabled={isLoading}
-        />
+        <>
+          {props?.isEdit && (
+            <Button
+              buttonStyle={[AuthStyles.loginButton, {width: '100%'}]}
+              containerStyle={{
+                marginTop: 20,
+                flex: 0,
+                width: '100%',
+                paddingHorizontal: 10,
+              }}
+              activeOpacity={0.8}
+              title={'CANCEL'}
+              onPress={cancelUpdateProfile}
+              titleStyle={AuthStyles.loginTextButton}
+              loading={props?.isLoading}
+              disabled={props?.isLoading}
+            />
+          )}
+        </>
+        <>
+          {!props?.isEdit && (
+            <>
+              <Button
+                buttonStyle={[AuthStyles.loginButton, {width: '100%'}]}
+                containerStyle={{
+                  marginTop: 20,
+                  flex: 0,
+                  width: '100%',
+                  paddingHorizontal: 10,
+                }}
+                activeOpacity={0.8}
+                title={'UPDATE PASSWORD'}
+                onPress={updatePassword}
+                titleStyle={AuthStyles.loginTextButton}
+                loading={props?.isLoading}
+                disabled={props?.isLoading}
+              />
+              <Button
+                buttonStyle={[AuthStyles.loginButton, {width: '100%'}]}
+                containerStyle={{
+                  marginTop: 20,
+                  flex: 0,
+                  width: '100%',
+                  paddingHorizontal: 10,
+                }}
+                activeOpacity={0.8}
+                title={'LOGOUT'}
+                onPress={logout}
+                titleStyle={AuthStyles.loginTextButton}
+                loading={props?.isLoading}
+                disabled={props?.isLoading}
+              />
+            </>
+          )}
+        </>
       </View>
     </AuthLayout>
   );

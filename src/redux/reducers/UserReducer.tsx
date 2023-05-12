@@ -1,11 +1,16 @@
 import {createReducer} from '@reduxjs/toolkit';
-import {createUser, loginUser} from '../../database/dao/UserDao';
+import {
+  createUser,
+  loginUser,
+  updateUserName,
+} from '../../database/dao/UserDao';
 
 import {
   loginUserRequest,
   signUpFailedAction,
   signUpRequestAction,
   signUpSuccessAction,
+  updateUserNameRequestAction,
 } from '../actions/UserAction';
 
 export interface SignUpResponseInterface {
@@ -46,6 +51,16 @@ const UserReducer = createReducer(initialState, builder => {
 
       const {users, data} = action?.payload;
       const result = loginUser(users, data);
+      state.user = result;
+
+      state.isLoading = false;
+    })
+    .addCase(updateUserNameRequestAction, (state, action) => {
+      state.isLoading = true;
+
+      const {realm, users, data} = action?.payload;
+      const result = updateUserName(realm, users, data);
+
       state.user = result;
 
       state.isLoading = false;
