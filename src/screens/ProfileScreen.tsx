@@ -19,6 +19,7 @@ export interface IProfileScreenProps {
   updateUserName: (data: {name: string; email: string}) => void;
   isEdit: boolean;
   updateIsEdit: (edit: boolean) => void;
+  logout: () => void;
 }
 
 function ProfileScreen(props: IProfileScreenProps) {
@@ -64,7 +65,30 @@ function ProfileScreen(props: IProfileScreenProps) {
     });
   }
 
-  function logout() {}
+  function logout() {
+    Alert.alert(
+      'Logout Confirmation',
+      'Are you sure, you want to Logout?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            props?.logout();
+          },
+          style: 'default',
+        },
+        {
+          text: 'No',
+          onPress: () => {},
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      },
+    );
+  }
 
   return (
     <AuthLayout>

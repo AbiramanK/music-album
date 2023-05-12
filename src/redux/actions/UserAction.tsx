@@ -2,6 +2,7 @@ import {createAction} from '@reduxjs/toolkit';
 
 import {
   LOGIN_USER_REQUEST,
+  LOGOUT_REQUEST,
   SIGN_UP_USER_FAILED,
   SIGN_UP_USER_REQUEST,
   SIGN_UP_USER_SUCCESS,
@@ -55,6 +56,8 @@ const updatePasswordRequestAction =
 const updateUserRequestAction =
   createAction<UpdateUserRequestInterface>(UPDATE_USER_REQUEST);
 
+const logoutRequestAction = createAction(LOGOUT_REQUEST);
+
 export {
   signUpRequestAction,
   signUpSuccessAction,
@@ -63,4 +66,5 @@ export {
   updateUserNameRequestAction,
   updatePasswordRequestAction,
   updateUserRequestAction,
+  logoutRequestAction,
 };

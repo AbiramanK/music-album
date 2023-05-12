@@ -8,6 +8,7 @@ import {
 
 import {
   loginUserRequest,
+  logoutRequestAction,
   signUpFailedAction,
   signUpRequestAction,
   signUpSuccessAction,
@@ -93,7 +94,13 @@ const UserReducer = createReducer(initialState, builder => {
         },
       };
     })
+    .addCase(logoutRequestAction, (state, action) => {
+      state.isLoading = true;
 
+      state.user = undefined;
+
+      state.isLoading = true;
+    })
     .addDefaultCase((state, action) => {
       state.user = undefined;
     });
