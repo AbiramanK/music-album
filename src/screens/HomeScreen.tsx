@@ -5,6 +5,7 @@ import {Card, List} from 'react-native-paper';
 
 export interface IHomeScreenProps {
   albums: Array<any>;
+  fetchMore: () => void;
 }
 
 function HomeScreen(props: IHomeScreenProps) {
@@ -30,6 +31,7 @@ function HomeScreen(props: IHomeScreenProps) {
 
   function loadMore() {
     console.log("List reaches it's end...");
+    props?.fetchMore();
   }
 
   return (

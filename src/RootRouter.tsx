@@ -17,7 +17,7 @@ export interface IRootRouterProps {}
 function RootRouter(props: IRootRouterProps) {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Auth">
+      <Stack.Navigator initialRouteName="Main">
         <Stack.Screen
           name="Auth"
           component={AuthContainer}

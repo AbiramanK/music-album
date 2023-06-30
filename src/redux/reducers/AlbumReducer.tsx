@@ -14,10 +14,17 @@ const initialState: AlbumInitialStateInterface = {
   error: '',
 };
 
-const fetchAlbums = createAsyncThunk(FETCH_ALBUMS, () => {
-  return fetch('https://itunes.apple.com/in/rss/topalbums/limit=50/json').then(
-    res => res.json(),
+const fetchAlbums = createAsyncThunk(FETCH_ALBUMS, async (cursor: number) => {
+  console.log('courser: ', cursor);
+  const result = await fetch(
+    `https://itunes.apple.com/in/rss/topalbums/limit=${cursor}/json`,
   );
+
+  const resultJson = await result?.json();
+
+  console.log('result: ', resultJson);
+
+  return resultJson;
 });
 
 const AlbumSlice = createSlice({
@@ -32,6 +39,12 @@ const AlbumSlice = createSlice({
       .addCase(fetchAlbums.fulfilled, (state, action) => {
         state.isLoading = false;
         state.albums = action.payload;
+        if (state.albums) {
+          state.albums.feed.entry = [
+            ...state?.albums?.feed?.entry,
+            ...action?.payload?.feed?.entry,
+          ];
+        }
         state.error = '';
       })
       .addCase(fetchAlbums.rejected, (state, action) => {
